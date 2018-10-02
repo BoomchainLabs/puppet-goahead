@@ -86,7 +86,7 @@ class goahead (
   } ->
   file { "${config_directory}/${config_file}":
     ensure  => 'present',
-    content => template("${module_name}/config.yml.epp"),
+    content => template_epp("${module_name}/config.yml.epp"),
     owner   => $goahead_user,
     group   => 'root',
     mode    => '0644',
