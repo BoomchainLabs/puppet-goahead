@@ -47,7 +47,7 @@ class goahead (
       home       => '/nonexistent',
       before     => [
         File[$config_directory],
-        File[$config_file],
+        File["${config_directory}/${config_file}"],
         File[$binary_path],
         Cron['goahead_client'],
       ],
