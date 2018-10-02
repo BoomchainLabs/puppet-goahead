@@ -78,7 +78,7 @@ class goahead (
     source => "puppet:///modules/${module_name}/goahead_client",
     owner  => $goahead_user,
     group  => 'root',
-    mode   => '0744',
+    mode   => '0544',
   }
 
   case $enable_cronjob {
