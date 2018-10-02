@@ -71,7 +71,7 @@ class goahead (
 
   cron { 'goahead_client':
     ensure  => $enable_cronjob_parameter,
-    command => "test -x ${binary_path} && ${binary_path}",
+    command => "test -x ${binary_path} && ${binary_path} &> /var/log/goahead.log",
     user    => $goahead_user,
     hour    => ['10-14'],
     minute  => fqdn_rand('59'),
