@@ -65,7 +65,7 @@ class goahead (
 
     file { "/etc/sudoers.d/${goahead_user}":
       ensure  => $add_goahead_sudo_rule_param_parameter,
-      content => "puppet:///modules/${module_name}/sudo_reboot_rule",
+      content => epp("${module_name}/sudo_reboot_rule.epp", {'goahead_user' => $goahead_user}),
       owner   => 'root',
       group   => 'root',
       mode    => '0440',
