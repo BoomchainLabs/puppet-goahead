@@ -35,6 +35,7 @@ class goahead (
   Boolean $enable_cronjob = false,
   String $config_directory = '/etc/goahead',
   String $config_file = 'client.yml',
+  String $log_file = '/var/log/goahead.log',
 ){
 
   if $add_goahead_user {
@@ -50,6 +51,8 @@ class goahead (
         File[$config_directory],
         File["${config_directory}/${config_file}"],
         File[$binary_path],
+        File[$binary_path],
+        File[$log_file],
         Cron['goahead_client'],
       ],
     }
@@ -84,9 +87,15 @@ class goahead (
     default: { $enable_cronjob_parameter = absent }
   }
 
+  file { $log_file:
+    ensure  => 'present',
+    owner   => $goahead_user,
+    group   => 'root',
+    mode    => '0640',
+  } ->
   cron { 'goahead_client':
     ensure  => $enable_cronjob_parameter,
-    command => "test -x ${binary_path} && ${binary_path} &> /var/log/goahead.log",
+    command => "test -x ${binary_path} && ${binary_path} &> ${log_file}",
     user    => $goahead_user,
     hour    => ['10-14'],
     minute  => fqdn_rand('59'),
