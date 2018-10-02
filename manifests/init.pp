@@ -86,13 +86,13 @@ class goahead (
   } ->
   file { "${config_directory}/${config_file}":
     ensure  => 'present',
-    content => epp("${module_name}/config.yml.epp"),
+    content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file),
     owner   => $goahead_user,
     group   => 'root',
     mode    => '0644',
+    }
+
   }
 
-}
-
-# vim: set ts=2 sta shiftwidth=2 softtabstop=2 expandtab foldmethod=syntax :
+  # vim: set ts=2 sta shiftwidth=2 softtabstop=2 expandtab foldmethod=syntax :
 
