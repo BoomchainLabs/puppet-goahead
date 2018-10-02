@@ -33,7 +33,7 @@ class goahead (
   String $goahead_user = 'goahead',
   Boolean $enable_cronjob = false,
   String $config_directory = '/etc/goahead',
-  String $config_file = 'goahead.yml',
+  String $config_file = 'client.yml',
 ){
 
   if $add_goahead_user {
