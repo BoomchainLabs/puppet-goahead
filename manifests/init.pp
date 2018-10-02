@@ -30,6 +30,7 @@ class goahead (
   String $service_url_ca_file,
   String $binary_path = '/usr/local/bin/goahead_client',
   Boolean $add_goahead_user = true,
+  Boolean $add_goahead_sudo_rule = false,
   String $goahead_user = 'goahead',
   Boolean $enable_cronjob = false,
   String $config_directory = '/etc/goahead',
@@ -51,6 +52,20 @@ class goahead (
         File[$binary_path],
         Cron['goahead_client'],
       ],
+    }
+
+    case $add_goahead_sudo_rule {
+      true: { $add_goahead_sudo_rule_param_parameter = present }
+      false: { $add_goahead_sudo_rule_param_parameter = absent }
+      default: { $add_goahead_sudo_rule_param_parameter = absent }
+    }
+
+    file { "/etc/sudoers.d/${goahead_user}":
+      ensure  => $add_goahead_sudo_rule_param_parameter,
+      content => "puppet:///modules/${module_name}/sudo_reboot_rule",
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0440',
     }
 
   }
