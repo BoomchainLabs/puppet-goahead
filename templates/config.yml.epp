@@ -4,4 +4,4 @@
 ---
 service_url: <%= $service_url %>
 service_url_ca_file: <%= $service_url_ca_file %>
-requesting_fqdn: <%= ::fqdn %>
+requesting_fqdn: <%= $::fqdn %>
