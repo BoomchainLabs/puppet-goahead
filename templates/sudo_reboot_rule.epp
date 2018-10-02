@@ -1,0 +1,3 @@
+<%- | String $goahead_user
+| -%>
+<%= $goahead_user %> ALL=(root) /sbin/init
