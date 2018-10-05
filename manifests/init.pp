@@ -98,7 +98,7 @@ class goahead (
     command => "test -x ${binary_path} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
     hour    => ['10-14'],
-    weekday => ['1-6'],
+    weekday => ['1-5'],
     minute  => fqdn_rand('59'),
   }
 
