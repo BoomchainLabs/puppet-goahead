@@ -99,24 +99,24 @@ class goahead (
     user    => $goahead_user,
     hour    => ['10-15'],
     weekday => ['1-5'],
-    minute  => "*/${fqdn_rand('5')",
-    }
-
-    file { $config_directory:
-      ensure  => 'directory',
-      owner   => $goahead_user,
-      group   => 'root',
-      mode    => '0644',
-    } ->
-    file { "${config_directory}/${config_file}":
-      ensure  => 'present',
-      content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file}),
-      owner   => $goahead_user,
-      group   => 'root',
-      mode    => '0644',
-    }
-
+    minute  => "*/${fqdn_rand('5')}",
   }
 
-  # vim: set ts=2 sta shiftwidth=2 softtabstop=2 expandtab foldmethod=syntax :
+  file { $config_directory:
+    ensure  => 'directory',
+    owner   => $goahead_user,
+    group   => 'root',
+    mode    => '0644',
+  } ->
+  file { "${config_directory}/${config_file}":
+    ensure  => 'present',
+    content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file}),
+    owner   => $goahead_user,
+    group   => 'root',
+    mode    => '0644',
+  }
+
+}
+
+# vim: set ts=2 sta shiftwidth=2 softtabstop=2 expandtab foldmethod=syntax :
 
