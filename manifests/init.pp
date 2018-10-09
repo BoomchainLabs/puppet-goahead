@@ -95,29 +95,28 @@ class goahead (
   } ->
   cron { 'goahead_client':
     ensure  => $enable_cronjob_parameter,
-    command => "test -x ${binary_path} && ${binary_path} &>> ${log_file}",
+    command => "test -x ${binary_path} && sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
-    hour    => ['10-14'],
+    hour    => ['10-15'],
     weekday => ['1-5'],
-    minute  => fqdn_rand('59'),
+    minute  => "*/${fqdn_rand('5')",
+    }
+
+    file { $config_directory:
+      ensure  => 'directory',
+      owner   => $goahead_user,
+      group   => 'root',
+      mode    => '0644',
+    } ->
+    file { "${config_directory}/${config_file}":
+      ensure  => 'present',
+      content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file}),
+      owner   => $goahead_user,
+      group   => 'root',
+      mode    => '0644',
+    }
+
   }
 
-
-  file { $config_directory:
-    ensure  => 'directory',
-    owner   => $goahead_user,
-    group   => 'root',
-    mode    => '0644',
-  } ->
-  file { "${config_directory}/${config_file}":
-    ensure  => 'present',
-    content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file}),
-    owner   => $goahead_user,
-    group   => 'root',
-    mode    => '0644',
-  }
-
-}
-
-# vim: set ts=2 sta shiftwidth=2 softtabstop=2 expandtab foldmethod=syntax :
+  # vim: set ts=2 sta shiftwidth=2 softtabstop=2 expandtab foldmethod=syntax :
 
