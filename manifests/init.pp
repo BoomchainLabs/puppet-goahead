@@ -97,7 +97,7 @@ class goahead (
     ensure  => $enable_cronjob_parameter,
     command => "test -x ${binary_path} && sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
-    hour    => ['10-15'],
+    hour    => ['9-15'],
     weekday => ['1-5'],
     minute  => "*/${fqdn_rand('5')}",
   }
