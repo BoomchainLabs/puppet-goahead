@@ -87,6 +87,7 @@ class goahead (
     default: { $enable_cronjob_parameter = absent }
   }
 
+  $fqdnrand5 = fqdn_rand('5')
   file { $log_file:
     ensure  => 'present',
     owner   => $goahead_user,
@@ -99,7 +100,7 @@ class goahead (
     user    => $goahead_user,
     hour    => ['9-15'],
     weekday => ['1-5'],
-    minute  => "*/${fqdn_rand('5')}",
+    minute  => "*/${$fqdnrand5 + 1}",
   }
 
   file { $config_directory:
