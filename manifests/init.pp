@@ -101,6 +101,12 @@ class goahead (
     hour    => ['9-15'],
     weekday => ['1-5'],
     minute  => "*/${$fqdnrand5 + 1}",
+  } ->
+  cron { 'goahead_client_reboot':
+    ensure  => $enable_cronjob_parameter,
+    command => "test -x ${binary_path} && sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
+    user    => $goahead_user,
+    special => 'reboot',
   }
 
   file { $config_directory:
