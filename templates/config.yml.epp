@@ -1,5 +1,8 @@
 <%- | String $service_url,
-      String $service_url_ca_file
+      String $service_url_ca_file,
+      String $restart_condition_script,
+      Integer $restart_condition_script_exit_code_for_reboot,
+      String $os_restart_hooks_dir
 | -%>
 ---
 service_url: <%= $service_url %>
