@@ -31,11 +31,15 @@ class goahead (
   String $binary_path = '/usr/local/bin/goahead_client',
   Boolean $add_goahead_user = true,
   Boolean $add_goahead_sudo_rule = false,
+  Boolean $add_init_6_restart_hook = false,
   String $goahead_user = 'goahead',
   Boolean $enable_cronjob = false,
   String $config_directory = '/etc/goahead',
   String $config_file = 'client.yml',
   String $log_file = '/var/log/goahead.log',
+  String $restart_condition_script = "${config_directory}/check_restart_condition.sh",
+  Integer $restart_condition_script_exit_code_for_reboot = 0,
+  String $os_restart_hooks_dir = "${config_directory}/restart_hooks.d",
 ){
 
   if $add_goahead_user {
@@ -69,6 +73,16 @@ class goahead (
       owner   => 'root',
       group   => 'root',
       mode    => '0440',
+    }
+
+    if $add_init_6_restart_hook {
+      file { "${os_restart_hooks_dir}/999_sudo_init_6.sh":
+        ensure  => present,
+        content => "puppet:///modules/${module_name}/999_sudo_init_6.sh",
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0440',
+      }
     }
 
   }
@@ -118,6 +132,12 @@ class goahead (
   file { "${config_directory}/${config_file}":
     ensure  => 'present',
     content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file}),
+    owner   => $goahead_user,
+    group   => 'root',
+    mode    => '0644',
+  } ->
+  file { $os_restart_hooks_dir:
+    ensure  => 'directory',
     owner   => $goahead_user,
     group   => 'root',
     mode    => '0644',
