@@ -131,7 +131,7 @@ class goahead (
   } ->
   file { "${config_directory}/${config_file}":
     ensure  => 'present',
-    content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file}),
+    content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file, 'restart_condition_script_exit_code_for_reboot' => $restart_condition_script_exit_code_for_reboot, 'restart_condition_script' => $restart_condition_script, 'os_restart_hooks_dir' => $os_restart_hooks_dir}),
     owner   => $goahead_user,
     group   => 'root',
     mode    => '0644',
