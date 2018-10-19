@@ -110,7 +110,7 @@ class goahead (
   } ->
   cron { 'goahead_client':
     ensure  => $enable_cronjob_parameter,
-    command => "test -x ${binary_path} && sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
+    command => "sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
     hour    => ['9-15'],
     weekday => ['1-5'],
@@ -118,7 +118,7 @@ class goahead (
   } ->
   cron { 'goahead_client_reboot':
     ensure  => $enable_cronjob_parameter,
-    command => "test -x ${binary_path} && sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
+    command => "sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
     special => 'reboot',
   }
