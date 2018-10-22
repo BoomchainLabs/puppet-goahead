@@ -50,7 +50,7 @@ class goahead (
       system     => true,
       shell      => '/bin/false',
       managehome => false,
-      home       => '/nonexistent',
+      home       => $config_directory,
       before     => [
         File[$config_directory],
         File["${config_directory}/${config_file}"],
