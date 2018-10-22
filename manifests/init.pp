@@ -119,9 +119,9 @@ class goahead (
   file { '/etc/cron.d/goahead_client':
     ensure  => $enable_cronjob_parameter,
     content => "*/${$fqdnrand5 + 1} 9-15 * * 1-5 goahead sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}\n@reboot goahead sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}\n",
-    owner   => 'root',
+    owner   => 'goahead',
     group   => 'root',
-    mode    => '0744',
+    mode    => '0664',
   } ->
   cron { 'goahead_client_reboot':
     ensure  => absent,
