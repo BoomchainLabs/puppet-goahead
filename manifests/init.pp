@@ -109,15 +109,22 @@ class goahead (
     mode    => '0640',
   } ->
   cron { 'goahead_client':
-    ensure  => $enable_cronjob_parameter,
+    ensure  => absent,
     command => "sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
     hour    => ['9-15'],
     weekday => ['1-5'],
     minute  => "*/${$fqdnrand5 + 1}",
   } ->
-  cron { 'goahead_client_reboot':
+  file { '/etc/cron.d/goahead_client':
     ensure  => $enable_cronjob_parameter,
+    content => "*/${$fqdnrand5 + 1} 9-15 * * 1-5 goahead sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}\n@reboot goahead sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0744',
+  } ->
+  cron { 'goahead_client_reboot':
+    ensure  => absent,
     command => "sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
     special => 'reboot',
