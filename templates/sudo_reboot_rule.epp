@@ -1,3 +1,3 @@
 <%- | String $goahead_user
 | -%>
-<%= $goahead_user %> ALL=(root) NOPASSWD: /sbin/init
+<%= $goahead_user %> ALL=(root) NOPASSWD: /sbin/init, /usr/bin/needs-restarting
