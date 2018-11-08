@@ -58,6 +58,7 @@ class goahead (
         File[$binary_path],
         File[$log_file],
         Cron['goahead_client'],
+        Cron['goahead_client_reboot'],
       ],
     }
 
