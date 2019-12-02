@@ -87,16 +87,6 @@ class goahead (
       }
     }
 
-    if $manage_os_restart_hooks_dir {
-      file { "${os_restart_hooks_dir}/":
-        ensure  => directory,
-        owner   => $goahead_user,
-        group   => 'root',
-        mode    => '0550',
-        purge   => true,
-      }
-    }
-
   }
 
   file { $binary_path:
@@ -156,10 +146,11 @@ class goahead (
     mode    => '0644',
   } ->
   file { $os_restart_hooks_dir:
-    ensure  => 'directory',
-    owner   => $goahead_user,
-    group   => 'root',
-    mode    => '0644',
+    ensure => 'directory',
+    owner  => $goahead_user,
+    group  => 'root',
+    mode   => '0644',
+    purge  => $purge_os_restart_hooks_dir,
   }
 
 }
