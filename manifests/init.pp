@@ -150,6 +150,7 @@ class goahead (
     owner   => $goahead_user,
     group   => 'root',
     mode    => '0644',
+    backup  => false,
     purge   => $purge_os_restart_hooks_dir,
     recurse => $purge_os_restart_hooks_dir,
   }
