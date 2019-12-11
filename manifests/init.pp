@@ -146,11 +146,12 @@ class goahead (
     mode    => '0644',
   } ->
   file { $os_restart_hooks_dir:
-    ensure => 'directory',
-    owner  => $goahead_user,
-    group  => 'root',
-    mode   => '0644',
-    purge  => $purge_os_restart_hooks_dir,
+    ensure  => 'directory',
+    owner   => $goahead_user,
+    group   => 'root',
+    mode    => '0644',
+    purge   => $purge_os_restart_hooks_dir,
+    recurse => $purge_os_restart_hooks_dir,
   }
 
 }
