@@ -40,7 +40,7 @@ class goahead (
   String $restart_condition_script = "${config_directory}/check_restart_condition.sh",
   Integer $restart_condition_script_exit_code_for_reboot = 0,
   String $os_restart_hooks_dir = "${config_directory}/restart_hooks.d",
-  Boolean $manage_os_restart_hooks_dir = true,
+  Boolean $purge_os_restart_hooks_dir = true,
 ){
 
   if $add_goahead_user {
