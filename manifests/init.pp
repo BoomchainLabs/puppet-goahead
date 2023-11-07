@@ -41,6 +41,8 @@ class goahead (
   Integer $restart_condition_script_exit_code_for_reboot = 0,
   String $os_restart_hooks_dir = "${config_directory}/restart_hooks.d",
   Boolean $purge_os_restart_hooks_dir = true,
+  String $cronjob_hour = '9-15',
+  String $cronjob_weekday = '1-5',
 ){
 
   if $add_goahead_user {
@@ -120,7 +122,7 @@ class goahead (
   } ->
   file { '/etc/cron.d/goahead_client':
     ensure  => $enable_cronjob_parameter,
-    content => "*/${$fqdnrand5 + 1} 9-15 * * 1-5 goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n@reboot goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n",
+    content => "*/${$fqdnrand5 + 1} ${cronjob_hour} * * ${cronjob_weekday} goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n@reboot goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n",
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
