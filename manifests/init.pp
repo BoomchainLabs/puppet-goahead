@@ -41,12 +41,11 @@ class goahead (
   Integer $restart_condition_script_exit_code_for_reboot = 0,
   String $os_restart_hooks_dir = "${config_directory}/restart_hooks.d",
   Boolean $purge_os_restart_hooks_dir = true,
+  Integer $cron_minute_offset = 1,
   String $cronjob_hour = '9-15',
   String $cronjob_weekday = '1-5',
-){
-
+) {
   if $add_goahead_user {
-
     user { $goahead_user:
       ensure     => present,
       comment    => 'system user for the goahead client',
@@ -73,7 +72,7 @@ class goahead (
 
     file { "/etc/sudoers.d/${goahead_user}":
       ensure  => $add_goahead_sudo_rule_param_parameter,
-      content => epp("${module_name}/sudo_reboot_rule.epp", {'goahead_user' => $goahead_user}),
+      content => epp("${module_name}/sudo_reboot_rule.epp", { 'goahead_user' => $goahead_user }),
       owner   => 'root',
       group   => 'root',
       mode    => '0440',
@@ -81,18 +80,17 @@ class goahead (
 
     if $add_init_6_restart_hook {
       file { "${os_restart_hooks_dir}/999_sudo_init_6.sh":
-        ensure  => present,
+        ensure  => file,
         content => "puppet:///modules/${module_name}/999_sudo_init_6.sh",
         owner   => 'root',
         group   => 'root',
         mode    => '0440',
       }
     }
-
   }
 
   file { $binary_path:
-    ensure => present,
+    ensure => file,
     source => "puppet:///modules/${module_name}/goahead_client",
     owner  => $goahead_user,
     group  => 'root',
@@ -107,27 +105,27 @@ class goahead (
 
   $fqdnrand5 = fqdn_rand('5')
   file { $log_file:
-    ensure  => 'present',
-    owner   => $goahead_user,
-    group   => 'root',
-    mode    => '0640',
-  } ->
-  cron { 'goahead_client':
+    ensure => 'file',
+    owner  => $goahead_user,
+    group  => 'root',
+    mode   => '0640',
+  }
+  -> cron { 'goahead_client':
     ensure  => absent,
     command => "sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
     hour    => ['9-15'],
     weekday => ['1-5'],
-    minute  => "*/${$fqdnrand5 + 1}",
-  } ->
-  file { '/etc/cron.d/goahead_client':
+    minute  => "*/${$fqdnrand5 + $cron_minute_offset}",
+  }
+  -> file { '/etc/cron.d/goahead_client':
     ensure  => $enable_cronjob_parameter,
     content => "*/${$fqdnrand5 + 1} ${cronjob_hour} * * ${cronjob_weekday} goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n@reboot goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n",
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-  } ->
-  cron { 'goahead_client_reboot':
+  }
+  -> cron { 'goahead_client_reboot':
     ensure  => absent,
     command => "sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
     user    => $goahead_user,
@@ -135,19 +133,19 @@ class goahead (
   }
 
   file { $config_directory:
-    ensure  => 'directory',
+    ensure => 'directory',
+    owner  => $goahead_user,
+    group  => 'root',
+    mode   => '0644',
+  }
+  -> file { "${config_directory}/${config_file}":
+    ensure  => 'file',
+    content => epp("${module_name}/config.yml.epp", { 'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file, 'restart_condition_script_exit_code_for_reboot' => $restart_condition_script_exit_code_for_reboot, 'restart_condition_script' => $restart_condition_script, 'os_restart_hooks_dir' => $os_restart_hooks_dir }),
     owner   => $goahead_user,
     group   => 'root',
     mode    => '0644',
-  } ->
-  file { "${config_directory}/${config_file}":
-    ensure  => 'present',
-    content => epp("${module_name}/config.yml.epp", {'service_url' => $service_url, 'service_url_ca_file' => $service_url_ca_file, 'restart_condition_script_exit_code_for_reboot' => $restart_condition_script_exit_code_for_reboot, 'restart_condition_script' => $restart_condition_script, 'os_restart_hooks_dir' => $os_restart_hooks_dir}),
-    owner   => $goahead_user,
-    group   => 'root',
-    mode    => '0644',
-  } ->
-  file { $os_restart_hooks_dir:
+  }
+  -> file { $os_restart_hooks_dir:
     ensure  => 'directory',
     owner   => $goahead_user,
     group   => 'root',
@@ -156,8 +154,6 @@ class goahead (
     purge   => $purge_os_restart_hooks_dir,
     recurse => $purge_os_restart_hooks_dir,
   }
-
 }
 
 # vim: set ts=2 sta shiftwidth=2 softtabstop=2 expandtab foldmethod=syntax :
-
