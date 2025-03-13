@@ -110,28 +110,13 @@ class goahead (
     group  => 'root',
     mode   => '0640',
   }
-  -> cron { 'goahead_client':
-    ensure  => absent,
-    command => "sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
-    user    => $goahead_user,
-    hour    => ['9-15'],
-    weekday => ['1-5'],
-    minute  => "*/${$fqdnrand5 + $cron_minute_offset}",
-  }
   -> file { '/etc/cron.d/goahead_client':
     ensure  => $enable_cronjob_parameter,
-    content => "*/${$fqdnrand5 + 1} ${cronjob_hour} * * ${cronjob_weekday} goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n@reboot goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n",
+    content => "*/${$fqdnrand5 + $cron_minute_offset} ${cronjob_hour} * * ${cronjob_weekday} goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n@reboot goahead sleep ${fqdn_rand('50')} && ${binary_path} --config ${config_directory}/${config_file} &>> ${log_file}\n",
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
   }
-  -> cron { 'goahead_client_reboot':
-    ensure  => absent,
-    command => "sleep ${fqdn_rand('50')} && ${binary_path} &>> ${log_file}",
-    user    => $goahead_user,
-    special => 'reboot',
-  }
-
   file { $config_directory:
     ensure => 'directory',
     owner  => $goahead_user,
